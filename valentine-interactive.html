@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #ffffff 0%, #ffe5e5 50%, #ffd4d4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .pixel-heart {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            animation: pump 1.2s ease-in-out infinite;
+        }
+        
+        @keyframes pump {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+        
+        /* Draw pixel heart - 8x8 grid */
+        .pixel-heart {
+            background-image: 
+                linear-gradient(to right, transparent 0px, transparent 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, transparent 16px, transparent 20px, #d32f2f 20px, #d32f2f 24px, #d32f2f 24px, #d32f2f 28px, transparent 28px),
+                linear-gradient(to right, transparent 0px, #d32f2f 4px, #d32f2f 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, #d32f2f 20px, #d32f2f 24px, #d32f2f 24px, #d32f2f 28px, #d32f2f 28px, transparent 32px),
+                linear-gradient(to right, #d32f2f 0px, #d32f2f 4px, #d32f2f 4px, #d32f2f 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, #d32f2f 20px, #d32f2f 24px, #d32f2f 24px, #d32f2f 28px, #d32f2f 28px, #d32f2f 32px),
+                linear-gradient(to right, #d32f2f 0px, #d32f2f 4px, #d32f2f 4px, #d32f2f 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, #d32f2f 20px, #d32f2f 24px, #d32f2f 24px, #d32f2f 28px, #d32f2f 28px, #d32f2f 32px),
+                linear-gradient(to right, transparent 0px, #d32f2f 4px, #d32f2f 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, #d32f2f 20px, #d32f2f 24px, #d32f2f 24px, #d32f2f 28px, transparent 28px),
+                linear-gradient(to right, transparent 0px, transparent 8px, #d32f2f 8px, #d32f2f 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, #d32f2f 20px, #d32f2f 24px, transparent 24px),
+                linear-gradient(to right, transparent 0px, transparent 12px, #d32f2f 12px, #d32f2f 16px, #d32f2f 16px, #d32f2f 20px, transparent 20px);
+            background-size: 32px 4px;
+            background-position: 0 0, 0 4px, 0 8px, 0 12px, 0 16px, 0 20px, 0 24px;
+            background-repeat: no-repeat;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 40px;
+        }
+        
+        .question-screen,
+        .success-screen {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-screen {
+            display: none;
+        }
+        
+        .success-screen.active {
+            display: block;
+        }
+        
+        .question-screen.hidden {
+            display: none;
+        }
+        
+        .teddy-container {
+            margin: 0 auto 30px;
+            display: inline-block;
+            animation: teddyBounce 2s ease-in-out infinite;
+        }
+        
+        .teddies-container {
+            margin: 0 auto 30px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .teddies-hugging {
+            margin: 0 auto 30px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .teddies-hugging svg {
+            display: block;
+        }
+        
+        .single-teddy {
+            animation: teddyBounce 2s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        .brown-teddy {
+            animation: hugLeft 2s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        .beige-teddy {
+            animation: hugRight 2s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        @keyframes hugLeft {
+            0%, 100% {
+                transform: translateX(0) rotate(0deg);
+            }
+            50% {
+                transform: translateX(15px) rotate(8deg);
+            }
+        }
+        
+        @keyframes hugRight {
+            0%, 100% {
+                transform: translateX(0) rotate(0deg);
+            }
+            50% {
+                transform: translateX(-15px) rotate(-8deg);
+            }
+        }
+        
+        .heart-float-1 {
+            animation: floatHeart1 3s ease-in-out infinite;
+        }
+        
+        .heart-float-2 {
+            animation: floatHeart2 2.5s ease-in-out infinite;
+        }
+        
+        .heart-float-3 {
+            animation: floatHeart3 3.2s ease-in-out infinite;
+        }
+        
+        .heart-float-4 {
+            animation: floatHeart4 2.8s ease-in-out infinite;
+        }
+        
+        .heart-float-5 {
+            animation: floatHeart5 3.5s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeart1 {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-10px) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes floatHeart2 {
+            0%, 100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-15px) scale(1.15) rotate(5deg);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes floatHeart3 {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-12px) scale(1.12);
+                opacity: 0.85;
+            }
+        }
+        
+        @keyframes floatHeart4 {
+            0%, 100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 0.95;
+            }
+            50% {
+                transform: translateY(-8px) scale(1.08) rotate(-5deg);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes floatHeart5 {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-14px) scale(1.14);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes teddyBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        
+        #teddyCanvas, #teddiesCanvas {
+            display: block;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #b71c1c;
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+        }
+        
+        .success-screen h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #b71c1c;
+            line-height: 1.8;
+            margin-top: 30px;
+        }
+        
+        .buttons-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            min-height: 100px;
+            position: relative;
+        }
+        
+        button {
+            padding: 22px 55px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            font-family: 'Crimson Text', serif;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(183, 28, 28, 0.25);
+            letter-spacing: 1px;
+        }
+        
+        .yes-btn {
+            background: #b71c1c;
+            color: white;
+        }
+        
+        .yes-btn:hover {
+            background: #9a0007;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(183, 28, 28, 0.35);
+        }
+        
+        .yes-btn:active {
+            transform: translateY(0);
+        }
+        
+        .no-btn {
+            background: white;
+            color: #b71c1c;
+            border: 3px solid #d32f2f;
+        }
+        
+        .no-btn:hover {
+            border-color: #b71c1c;
+            background: #ffebee;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .success-screen h1 {
+                font-size: 3rem;
+            }
+            
+            button {
+                padding: 18px 40px;
+                font-size: 1.2rem;
+            }
+            
+            .success-message {
+                font-size: 1.5rem;
+            }
+            
+            .pixel-cat {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts"></div>
+    
+    <div class="container">
+        <div class="question-screen" id="questionScreen">
+            <div class="teddy-container">
+                <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Brown teddy with pleading eyes -->
+                    <g class="single-teddy">
+                        <!-- Left ear -->
+                        <circle cx="60" cy="50" r="22" fill="#8B4513"/>
+                        <circle cx="60" cy="50" r="15" fill="#A0522D"/>
+                        <!-- Right ear -->
+                        <circle cx="140" cy="50" r="22" fill="#8B4513"/>
+                        <circle cx="140" cy="50" r="15" fill="#A0522D"/>
+                        <!-- Head -->
+                        <ellipse cx="100" cy="85" rx="50" ry="55" fill="#8B4513"/>
+                        <!-- Face -->
+                        <ellipse cx="100" cy="95" rx="35" ry="32" fill="#A0522D"/>
+                        
+                        <!-- Big pleading eyes -->
+                        <g class="left-eye">
+                            <ellipse cx="80" cy="85" rx="12" ry="16" fill="#000000"/>
+                            <ellipse cx="82" cy="82" rx="5" ry="7" fill="#FFFFFF"/>
+                            <circle cx="84" cy="88" r="2" fill="#FFFFFF" opacity="0.8"/>
+                        </g>
+                        <g class="right-eye">
+                            <ellipse cx="120" cy="85" rx="12" ry="16" fill="#000000"/>
+                            <ellipse cx="122" cy="82" rx="5" ry="7" fill="#FFFFFF"/>
+                            <circle cx="124" cy="88" r="2" fill="#FFFFFF" opacity="0.8"/>
+                        </g>
+                        
+                        <!-- Eyebrows (slight worry/pleading) -->
+                        <path d="M68,72 Q75,68 85,70" stroke="#654321" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M115,70 Q125,68 132,72" stroke="#654321" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Snout/Muzzle -->
+                        <ellipse cx="100" cy="105" rx="18" ry="15" fill="#D2B48C"/>
+                        <!-- Nose -->
+                        <ellipse cx="100" cy="100" rx="8" ry="7" fill="#654321"/>
+                        <!-- Mouth (slight pout) -->
+                        <path d="M92,108 Q100,112 108,108" stroke="#654321" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Body -->
+                        <ellipse cx="100" cy="155" rx="42" ry="45" fill="#8B4513"/>
+                        <!-- Belly -->
+                        <ellipse cx="100" cy="160" rx="28" ry="32" fill="#A0522D"/>
+                        <!-- Arms -->
+                        <ellipse cx="58" cy="145" rx="15" ry="25" fill="#8B4513" transform="rotate(-20 58 145)"/>
+                        <ellipse cx="142" cy="145" rx="15" ry="25" fill="#8B4513" transform="rotate(20 142 145)"/>
+                        <!-- Legs -->
+                        <ellipse cx="80" cy="185" rx="16" ry="22" fill="#8B4513"/>
+                        <ellipse cx="120" cy="185" rx="16" ry="22" fill="#8B4513"/>
+                    </g>
+                </svg>
+            </div>
+            <h1>Hei Marte ♥<br>Will You Be My Valentine?</h1>
+            <div class="buttons-container" id="buttonsContainer">
+                <button class="yes-btn" onclick="handleYes()">Yes</button>
+                <button class="no-btn" id="noBtn">No</button>
+            </div>
+        </div>
+        
+        <div class="success-screen" id="successScreen">
+            <div class="teddies-hugging">
+                <svg width="300" height="250" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Floating hearts -->
+                    <g class="floating-hearts">
+                        <path d="M50,40 C50,35 45,30 40,30 C35,30 30,35 30,40 C30,35 25,30 20,30 C15,30 10,35 10,40 C10,50 30,60 30,60 C30,60 50,50 50,40 Z" fill="#ff8b94" class="heart-float-1"/>
+                        <path d="M100,20 C100,17 97,14 94,14 C91,14 88,17 88,20 C88,17 85,14 82,14 C79,14 76,17 76,20 C76,26 88,33 88,33 C88,33 100,26 100,20 Z" fill="#ffaab0" class="heart-float-2"/>
+                        <path d="M270,50 C270,45 265,40 260,40 C255,40 250,45 250,50 C250,45 245,40 240,40 C235,40 230,45 230,50 C230,60 250,70 250,70 C250,70 270,60 270,50 Z" fill="#ff8b94" class="heart-float-3"/>
+                        <path d="M280,100 C280,97 277,94 274,94 C271,94 268,97 268,100 C268,97 265,94 262,94 C259,94 256,97 256,100 C256,106 268,113 268,113 C268,113 280,106 280,100 Z" fill="#ffaab0" class="heart-float-4"/>
+                        <path d="M40,140 C40,137 37,134 34,134 C31,134 28,137 28,140 C28,137 25,134 22,134 C19,134 16,137 16,140 C16,146 28,153 28,153 C28,153 40,146 40,140 Z" fill="#ffc5ca" class="heart-float-5"/>
+                    </g>
+                    
+                    <!-- Brown teddy (left) -->
+                    <g class="brown-teddy">
+                        <!-- Left ear -->
+                        <circle cx="100" cy="100" r="15" fill="#8B4513"/>
+                        <circle cx="100" cy="100" r="10" fill="#A0522D"/>
+                        <!-- Right ear -->
+                        <circle cx="140" cy="100" r="15" fill="#8B4513"/>
+                        <circle cx="140" cy="100" r="10" fill="#A0522D"/>
+                        <!-- Head -->
+                        <ellipse cx="120" cy="120" rx="35" ry="38" fill="#8B4513"/>
+                        <!-- Face -->
+                        <ellipse cx="120" cy="128" rx="22" ry="20" fill="#A0522D"/>
+                        <!-- Eyes (closed, happy) -->
+                        <path d="M107,118 Q110,122 113,118" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M127,118 Q130,122 133,118" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <ellipse cx="120" cy="132" rx="5" ry="4" fill="#654321"/>
+                        <!-- Mouth -->
+                        <path d="M115,136 Q120,140 125,136" stroke="#654321" stroke-width="2" fill="none"/>
+                        <!-- Body -->
+                        <ellipse cx="120" cy="175" rx="32" ry="38" fill="#8B4513"/>
+                        <!-- Belly -->
+                        <ellipse cx="120" cy="180" rx="20" ry="25" fill="#A0522D"/>
+                        <!-- Arms reaching right -->
+                        <ellipse cx="145" cy="165" rx="12" ry="20" fill="#8B4513" transform="rotate(30 145 165)"/>
+                        <!-- Legs -->
+                        <ellipse cx="105" cy="205" rx="12" ry="18" fill="#8B4513"/>
+                        <ellipse cx="135" cy="205" rx="12" ry="18" fill="#8B4513"/>
+                    </g>
+                    
+                    <!-- Beige/white teddy (right) -->
+                    <g class="beige-teddy">
+                        <!-- Left ear -->
+                        <circle cx="160" cy="100" r="15" fill="#D2B48C"/>
+                        <circle cx="160" cy="100" r="10" fill="#F5DEB3"/>
+                        <!-- Right ear -->
+                        <circle cx="200" cy="100" r="15" fill="#D2B48C"/>
+                        <circle cx="200" cy="100" r="10" fill="#F5DEB3"/>
+                        <!-- Head -->
+                        <ellipse cx="180" cy="120" rx="35" ry="38" fill="#F5F5DC"/>
+                        <!-- Face -->
+                        <ellipse cx="180" cy="128" rx="22" ry="20" fill="#FFF8DC"/>
+                        <!-- Blush -->
+                        <circle cx="160" cy="128" r="6" fill="#ffb3ba" opacity="0.5"/>
+                        <circle cx="200" cy="128" r="6" fill="#ffb3ba" opacity="0.5"/>
+                        <!-- Eyes (closed, happy) -->
+                        <path d="M167,118 Q170,122 173,118" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M187,118 Q190,122 193,118" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <ellipse cx="180" cy="132" rx="5" ry="4" fill="#DEB887"/>
+                        <!-- Mouth -->
+                        <path d="M175,136 Q180,140 185,136" stroke="#DEB887" stroke-width="2" fill="none"/>
+                        <!-- Body -->
+                        <ellipse cx="180" cy="175" rx="32" ry="38" fill="#F5F5DC"/>
+                        <!-- Belly -->
+                        <ellipse cx="180" cy="180" rx="20" ry="25" fill="#FFF8DC"/>
+                        <!-- Arms reaching left -->
+                        <ellipse cx="155" cy="165" rx="12" ry="20" fill="#F5F5DC" transform="rotate(-30 155 165)"/>
+                        <!-- Legs -->
+                        <ellipse cx="165" cy="205" rx="12" ry="18" fill="#F5F5DC"/>
+                        <ellipse cx="195" cy="205" rx="12" ry="18" fill="#F5F5DC"/>
+                    </g>
+                </svg>
+            </div>
+            <h1>YIPPY!</h1>
+            <div class="success-message">
+                Happy Valentine's Day<br>
+                <span style="position: relative; display: inline-block;">
+                    <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 4rem; color: #d32f2f; opacity: 0.15; z-index: -1;">♥</span>
+                    Savner deg og elsker deg masse
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Create pixel hearts
+        function createPixelHearts() {
+            const container = document.getElementById('hearts');
+            const heartCount = 12;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'pixel-heart';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 1.2 + 's';
+                heart.style.animationDuration = (Math.random() * 0.4 + 1) + 's';
+                heart.style.opacity = Math.random() * 0.25 + 0.15;
+                container.appendChild(heart);
+            }
+        }
+        
+        createPixelHearts();
+        
+        // No button behavior
+        const noBtn = document.getElementById('noBtn');
+        const buttonsContainer = document.getElementById('buttonsContainer');
+        
+        let runAwayCount = 0;
+        
+        function moveNoButton() {
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Calculate available space
+            const maxX = window.innerWidth - btnRect.width - 40;
+            const maxY = window.innerHeight - btnRect.height - 40;
+            
+            // Generate random position
+            let newX = Math.random() * maxX;
+            let newY = Math.random() * maxY;
+            
+            // Make sure it's not too close to current position
+            const currentX = btnRect.left;
+            const currentY = btnRect.top;
+            
+            if (Math.abs(newX - currentX) < 200) {
+                newX = currentX > window.innerWidth / 2 ? 100 : maxX - 100;
+            }
+            
+            if (Math.abs(newY - currentY) < 150) {
+                newY = currentY > window.innerHeight / 2 ? 100 : maxY - 100;
+            }
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+            noBtn.style.transform = 'none';
+            
+            runAwayCount++;
+            
+            // Change text based on attempts
+            if (runAwayCount === 3) {
+                noBtn.textContent = 'Please?';
+            } else if (runAwayCount === 6) {
+                noBtn.textContent = 'Reconsider';
+            } else if (runAwayCount === 9) {
+                noBtn.textContent = 'Think again';
+            }
+        }
+        
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+        
+        // Handle Yes button
+        function handleYes() {
+            const questionScreen = document.getElementById('questionScreen');
+            const successScreen = document.getElementById('successScreen');
+            
+            questionScreen.classList.add('hidden');
+            successScreen.classList.add('active');
+            
+            createConfetti();
+        }
+        
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#b71c1c', '#d32f2f', '#ffcdd2', '#ffffff'];
+            
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '8px';
+                    confetti.style.height = '8px';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '1000';
+                    
+                    const duration = Math.random() * 3 + 2;
+                    confetti.style.animation = `confetti-fall ${duration}s linear`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, duration * 1000);
+                }, i * 30);
+            }
+        }
+        
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confetti-fall {
+                to {
+                    transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
